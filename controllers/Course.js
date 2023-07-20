@@ -236,7 +236,7 @@ exports.editCourse=async(req,res)=>{
 
       }
        let imageUrl = courseDet.thumbnail
-      if(req.files.thumbnail){
+      if(req.files?.thumbnail){
             await destroyMedia(imageUrl)
            const cloudRes= await uploadFile(req.files.thumbnail,"Thumbnails")
            imageUrl = cloudRes.secure_url
