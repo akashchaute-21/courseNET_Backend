@@ -223,7 +223,7 @@ exports.editCourse=async(req,res)=>{
         const data= req.body;
         const courseId = data.courseId;
         delete data.courseId
-
+        console.log("data..........",data)
         const courseDet = course.findById(courseId)
         if(data.category){ 
            await Category.findByIdAndUpdate(courseDet.category,{
@@ -232,7 +232,8 @@ exports.editCourse=async(req,res)=>{
                 }
             });
           const cat = Category.findOne({name:data.category})
-          data.category=cat._id
+          console.log("cattttt",cat)
+          data.category=new mongoose.Types.ObjectId(cat._id)
 
       }
        let imageUrl = courseDet.thumbnail
