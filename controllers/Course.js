@@ -224,19 +224,20 @@ exports.editCourse=async(req,res)=>{
         const courseId = data.courseId;
         delete data.courseId
         console.log("data..........",data)
-        const courseDet = course.findById(courseId)
-        if(data.category){ 
+        const courseDet = await course.findById(courseId)
+        if(data?.category){ 
            await Category.findByIdAndUpdate(courseDet.category,{
                 $pull:{
                     courses:courseId
                 }
             });
-          const cat = Category.findOne({name:data.category})
+          const cat =await  Category.findOne({name:data.category})
           console.log("cattttt",cat)
           data.category=new mongoose.Types.ObjectId(cat._id)
 
       }
        let imageUrl = courseDet.thumbnail
+     //  console.log(imageUrl)
       if(req.files?.thumbnail){
             await destroyMedia(imageUrl)
            const cloudRes= await uploadFile(req.files.thumbnail,"Thumbnails")
