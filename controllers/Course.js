@@ -289,7 +289,17 @@ exports.getCatCourses  = async(req,res)=>{
         let catDet=[];
         
         if(category==="ALL"){
-              catDet=await course.find({}).populate("instructor")
+              catDet=await course.find({}).populate({
+                path:"instructor",
+                populate:{
+                    path:"aditionaldetails"
+                }
+            }).populate("category").populate("ratingAndReviews").populate({
+                path:"courseContent",
+                populate:{
+                    path:"subSection"
+                }
+            })
         }
         else{
             const cat =await  Category.findOne({name:category})
