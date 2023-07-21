@@ -184,9 +184,20 @@ exports.getEnrolledCourses = async(req,res)=>{
      try {
         const userId = req.user.id;
       //  console.log("id",userId)
-        const userDet = await User.findById(userId).populate("courses");
+        const userDet = await User.findById(userId);
+        const courseDet = await Course.find({_id:{$in:userDet.courses}}).populate({
+          path:"instructor",
+          populate:{
+              path:"aditionaldetails"
+          }
+      }).populate("category").populate("ratingAndReviews").populate({
+          path:"courseContent",
+          populate:{
+              path:"subSection"
+          }
+      }).exec() 
      
-        if(!userDet){
+        if(!userDet || !courseDet){
           return res.status(400).json({
             success:false,
             message:"could not get data"
@@ -196,7 +207,7 @@ exports.getEnrolledCourses = async(req,res)=>{
         return res.status(200).json({
           success:true,
           message:"enrolled Courses fetched successfully",
-          data: userDet.courses
+          data: courseDet 
       })
      } catch (error) {
       console.log(error);
