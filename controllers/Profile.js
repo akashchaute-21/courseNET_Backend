@@ -73,14 +73,18 @@ exports.deleteAccount = async(req,res)=>{
     const coursesId =userDetail.courses.map((course)=> new mongoose.Types.ObjectId(course));
 
      if(userDetail.accounttype==="Student"){
-    await Course.updateMany({$in:coursesId},{
+    await Course.updateMany({_id:{$in:coursesId}},{
         $pull:{
             studentsEnrolled:new mongoose.Types.ObjectId(userId)
         }
     },{multi:true})
   }
+
   else if(userDetail.accounttype==="Instructor"){
-     coursesId.map(async(cid)=>{if(!await delCourse(cid)){
+     coursesId.map(
+      async(cid)=>{
+        const delCo = await delCourse(cid);
+        if(!delCo){
       return res.status(500).json({
             success:false,
              message:"could not delete one of courses"
